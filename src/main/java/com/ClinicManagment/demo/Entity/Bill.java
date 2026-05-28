@@ -1,5 +1,6 @@
 package com.ClinicManagment.demo.Entity;
 
+import com.ClinicManagment.demo.Enum.BillStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,9 @@ public class Bill {
 
     private Date dueDate;
 
-    private String Status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private BillStatus billStatus;
 
     @OneToMany(mappedBy = "bill")
     private List<LabRequest> labRequests;

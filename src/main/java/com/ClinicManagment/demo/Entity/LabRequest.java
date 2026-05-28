@@ -1,5 +1,6 @@
 package com.ClinicManagment.demo.Entity;
 
+import com.ClinicManagment.demo.Enum.LabStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,9 @@ public class LabRequest {
 
     private Date dateOrdered;
 
-    private String Status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private LabStatus labStatus;
 
     private String results;
 

@@ -1,5 +1,6 @@
 package com.ClinicManagment.demo.Entity;
 
+import com.ClinicManagment.demo.Enum.PatientGender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,8 @@ public class Patient {
 
     private String lastName;
 
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private PatientGender gender;
 
     private String email;
 
