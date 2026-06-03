@@ -1,5 +1,7 @@
 package com.ClinicManagment.demo.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,5 +37,10 @@ public class Prescription {
     @ManyToOne
     @JoinColumn(name = "provider_id")
     private Provider provider;
+
+    @ManyToOne
+    @JoinColumn(name = "pharmacy_id")
+    @JsonIgnoreProperties("prescriptions")
+    private Pharmacy pharmacy;
 
 }

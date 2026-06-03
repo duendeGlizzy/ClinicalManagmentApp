@@ -1,6 +1,7 @@
 package com.ClinicManagment.demo.Service;
 
 
+import com.ClinicManagment.demo.Entity.Pharmacy;
 import com.ClinicManagment.demo.Entity.Prescription;
 import com.ClinicManagment.demo.Repository.PrescriptionRepository;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,12 @@ import java.util.List;
 public class PrescriptionService {
 
     private final PrescriptionRepository prescriptionRepository;
+    private final PharmacyService pharmacyService;
 
-    public PrescriptionService(PrescriptionRepository prescriptionRepository) {
+    public PrescriptionService(PrescriptionRepository prescriptionRepository,
+                               PharmacyService pharmacyService) {
         this.prescriptionRepository = prescriptionRepository;
+        this.pharmacyService = pharmacyService;
     }
 
     public List<Prescription> findAll() {
@@ -36,12 +40,14 @@ public class PrescriptionService {
         prescriptionRepository.deleteById(id);
     }
 
-    public Prescription update(int id, Prescription prescription) {
+    public Prescription update(int id, int pharmacyId, Prescription prescription) {
         if (!prescriptionRepository.existsById(id)) {
             throw new RuntimeException("Prescription not found");
         }
         Prescription currentPrescription = prescriptionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Prescription not found"));
+
+        Pharmacy currentPharmacy = pharmacyService.getPharmacyById(pharmacyId);
 
         currentPrescription.setDose(prescription.getDose());
         currentPrescription.setPatient(prescription.getPatient());
@@ -50,6 +56,8 @@ public class PrescriptionService {
         currentPrescription.setRefills(prescription.getRefills());
         currentPrescription.setRxNumber(prescription.getRxNumber());
         currentPrescription.setDatePrescribed(prescription.getDatePrescribed());
+        currentPrescription.setPharmacy(currentPharmacy);
+
 
         return prescriptionRepository.save(currentPrescription);
 

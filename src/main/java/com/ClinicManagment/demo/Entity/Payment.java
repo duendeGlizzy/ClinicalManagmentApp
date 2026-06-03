@@ -1,12 +1,13 @@
 package com.ClinicManagment.demo.Entity;
 
+import com.ClinicManagment.demo.Enum.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,9 +22,10 @@ public class Payment {
 
     private BigDecimal totalAmount;
 
-    private Date paymentDate;
+    private LocalDateTime paymentDate;
 
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 
     @ManyToOne
     @JoinColumn(name = "bill_id")

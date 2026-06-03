@@ -1,14 +1,12 @@
 package com.ClinicManagment.demo.Service;
 
-import com.ClinicManagment.demo.Entity.Insurance;
-import com.ClinicManagment.demo.Entity.Patient;
-import com.ClinicManagment.demo.Entity.Prescription;
+import com.ClinicManagment.demo.Entity.*;
 import com.ClinicManagment.demo.Repository.PatientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -16,14 +14,20 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final InsuranceService insuranceService;
     private final PrescriptionService prescriptionService;
+    private final PharmacyService pharmacyService;
+    private final AppointmentService appointmentService;
 
     public PatientService(PatientRepository patientRepository,
                           InsuranceService insuranceService,
-                          PrescriptionService prescriptionService) {
+                          PrescriptionService prescriptionService,
+                          PharmacyService pharmacyService,
+                          AppointmentService appointmentService) {
 
+        this.pharmacyService = pharmacyService;
         this.patientRepository = patientRepository;
         this.insuranceService=  insuranceService;
         this.prescriptionService = prescriptionService;
+        this.appointmentService = appointmentService;
     }
 
     public List<Patient> getAllPatients() {
@@ -138,14 +142,17 @@ public class PatientService {
     }
 
     @Transactional
-    public Prescription assignPrescriptionToPatient(int patientId, Prescription newPrescription) {
+    public Prescription assignPrescriptionToPatient(int patientId, int pharmacyId, Prescription newPrescription) {
         if(!patientRepository.existsById(patientId)&& prescriptionService.findByPatientId(patientId) == null){
             throw new IllegalArgumentException("Patient not found or Prescription not found");
         }
         Patient currentPatient = patientRepository.findById(patientId)
                 .orElseThrow(()-> new RuntimeException("Patient not found"));
 
+        Pharmacy currentPharmacy = pharmacyService.getPharmacyById(pharmacyId);
+
         newPrescription.setPatient(currentPatient);
+        newPrescription.setPharmacy(currentPharmacy);
 
         return prescriptionService.save(newPrescription);
 
@@ -185,7 +192,17 @@ public class PatientService {
         return prescriptionService.save(currentPrescription);
     }
 
+    //Appointment Logic
+
+    public Optional<List<Appointment>> getPatientAppointments(int patientId) {
+        if(!patientRepository.existsById(patientId)){
+            throw new IllegalArgumentException("Patient not found");
+        }
+        return appointmentService.getAppointmentsByPatientId(patientId);
+    }
 
 
-
+    public boolean existsById(int patientId) {
+        return patientRepository.existsById(patientId);
+    }
 }
