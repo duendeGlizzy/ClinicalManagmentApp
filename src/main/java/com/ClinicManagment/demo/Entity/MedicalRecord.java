@@ -34,4 +34,8 @@ public class MedicalRecord {
     @JoinColumn(name = "provider_id")
     private Provider provider;
 
+    @OneToOne()
+    @JoinColumn(name = "appointment_id", referencedColumnName = "appointmentId", unique = true)
+    private Appointment appointment;
+
 }

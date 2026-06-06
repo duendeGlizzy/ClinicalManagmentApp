@@ -3,6 +3,7 @@ package com.ClinicManagment.demo.Service;
 import com.ClinicManagment.demo.Entity.Appointment;
 import com.ClinicManagment.demo.Entity.Patient;
 import com.ClinicManagment.demo.Repository.AppointmentRepository;
+import com.ClinicManagment.demo.Repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +13,12 @@ import java.util.Optional;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final PatientService patientService;
+    private final PatientRepository patientRepository;
 
     public AppointmentService(AppointmentRepository appointmentRepository,
-                              PatientService patientService) {
+                              PatientRepository patientRepository) {
         this.appointmentRepository = appointmentRepository;
-        this.patientService = patientService;
+        this.patientRepository = patientRepository;
     }
 
     public Appointment addAppointment(Appointment appointment) {
@@ -54,10 +55,13 @@ public class AppointmentService {
     }
 
     public Optional<List<Appointment>> getAppointmentsByPatientId(int patientId) {
-        if(!patientService.existsById(patientId)) {
+        if(!patientRepository.existsById(patientId)) {
             throw new RuntimeException("No appointment found with id " + patientId);
         }
-        Patient currentPatient = patientService.getPatientById(patientId);
+        if(patientRepository.findById(patientId).isEmpty()) {
+            throw new RuntimeException("No appointment found with id " + patientId);
+        }
+        Patient currentPatient = patientRepository.findById(patientId).get();
 
         return appointmentRepository.getAppointmentsByPatient(currentPatient);
     }

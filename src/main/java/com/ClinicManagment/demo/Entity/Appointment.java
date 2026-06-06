@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -37,5 +38,8 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "provider_id")
     private Provider provider;
+
+    @OneToOne
+    private MedicalRecord medicalRecord;
 
 }

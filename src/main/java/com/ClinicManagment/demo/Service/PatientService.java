@@ -143,7 +143,7 @@ public class PatientService {
 
     @Transactional
     public Prescription assignPrescriptionToPatient(int patientId, int pharmacyId, Prescription newPrescription) {
-        if(!patientRepository.existsById(patientId)&& prescriptionService.findByPatientId(patientId) == null){
+        if(!patientRepository.existsById(patientId) || prescriptionService.findByPatientId(patientId) == null){
             throw new IllegalArgumentException("Patient not found or Prescription not found");
         }
         Patient currentPatient = patientRepository.findById(patientId)
@@ -173,6 +173,7 @@ public class PatientService {
 
     }
 
+    @Transactional
     public Prescription fulfillPrescriptionRefill(int patientId, int prescriptionId) {
 
         if(!patientRepository.existsById(patientId)){
